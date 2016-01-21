@@ -8,7 +8,7 @@ if(isset($_POST['search']))
 $search=$_POST['search'];
 $search=str_replace(" ", "+", $search);
 //Replace <affiliate-id> and <access-token> with the correct values
-$flipkart = new \Futurerulers\Flipkart("<affiliateid>", "<affiliate-token", "json");
+$flipkart = new \Futurerulers\Flipkart("<id>", "<token>", "json");
 
 //To view category pages, API URL is passed as query string.
 $url ='https://affiliate-api.flipkart.net/affiliate/search/json?query='.
@@ -85,9 +85,10 @@ if($url){
 				echo '</td align="center"><td>';
 				$end =1;
 			}
-
+               if($sellingPrice>=$val&&$sellingPrice<=$val1||$val==NULL&&$val1==NULL)
+			   {
 			echo '<a target="_blank" href="'.$productUrl.'"><img src="'.$productImage.'"/><br>'.$title."</a><br>Rs. ".$sellingPrice;
-
+			   }
 			if($end)
 				echo '</td></tr>';
 				}

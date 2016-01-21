@@ -84,29 +84,28 @@
 <div id="one">
 
 <?php
+error_reporting(0);
 
 require_once('ebay.php');
-$ebay = new ebay('<your id>', 'EBAY-US');
+$ebay = new ebay('<your id>', 'EBAY-IN');
 $sort_orders = $ebay->sortOrders();
 ?>
 
 <form action="services.php"  method="post">
-	<input type="text" name="search" id="search"  style="color:blue " placeholder="what you r wishing today">
-	<select name="sort" id="sort">
-	<?php
-	foreach($sort_orders as $key => $sort_order){
-	?>
-		<option value="<?php echo $key; ?>"  style="background-color:#ccffff"><?php echo $sort_order; ?></option>
-	<?php	
-	}
-	?>
+	<input type="text" name="search" id="search"  style="color:blue " placeholder="what you r wishing today"><br>
+
 	</select>
+	<br><pre>PRICE: <br><input type="text" name="from" style="color:blue;width: 60px" placeholder="from"> - <input type="text" name="to" style="color:blue;width: 60px" placeholder="to"></pre>
 	<input type="submit" value="Search"  style="color:blue">
+	
 </form>
 
 <?php
+$val=$_POST['from'];
+$val1=$_POST['to'];
+
 if(!empty($_POST['search'])){
-	$results = $ebay->findItemsAdvanced($_POST['search'], $_POST['sort']);
+	$results = $ebay->findItemsAdvanced($_POST['search'], BestMatch);
 	$item_count = $results['findItemsAdvancedResponse'][0]['searchResult'][0]['@count'];
 	
 	if($item_count > 0){
@@ -120,7 +119,7 @@ if(!empty($_POST['search'])){
 	
 		foreach($items as $i){
 			$count++;
-	
+        	
 
 $end = 0;
 			if($count%3==1)
@@ -131,11 +130,15 @@ $end = 0;
 				echo '</td><td align="center">';
 				$end =1;
 			}
-	?>
-
+	
+	
+              
+			     if($i['sellingStatus'][0]['currentPrice'][0]['__value__']>=$val&&$i['sellingStatus'][0]['currentPrice'][0]['__value__']<=$val1||$val==NULL&&$val1==NULL)
+				 {
+?>			 
 	
 			<div class="item_title">
-				<a href="<?php echo $i['viewItemURL'][0]; ?>"><?php echo $i['title'][0]; ?></a>
+				<a target="_blank" href="<?php echo $i['viewItemURL'][0]; ?>"><?php echo $i['title'][0]; ?></a>
 			</div>
 			<div class="item_img">
 				<img src="<?php echo $i['galleryURL'][0]; ?>" alt="<?php echo $i['title']; ?>">
@@ -144,8 +147,9 @@ $end = 0;
 				<?php echo $i['sellingStatus'][0]['currentPrice'][0]['@currencyId']; ?>
 				<?php echo $i['sellingStatus'][0]['currentPrice'][0]['__value__']; ?>
 			</div>
-			
-			
+			<?php
+				 }
+?>			
 <?php
 		}
 		?>
@@ -159,12 +163,13 @@ if($item_count ==0)
 </div>
 <?php
 }
-}
+
 ?><br>
 <div id="two">
 
 <?php
 require_once('demo.php');
+}
 ?>
 
 	<div id="sub-footer">
